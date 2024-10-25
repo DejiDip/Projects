@@ -1,0 +1,114 @@
+<html>
+    <script src="dailyweatherdata.js"></script>
+<script src="weatherforecast.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js"
+  integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+
+
+    body {
+        background-image: url('or.jpg');
+    }
+
+    canvas {
+        width: 1000px !important;
+        height: 400px !important;
+    }
+</style>
+
+<body>
+    <h1>Weather Forecast for Stoke-on-Trent</h1>
+
+    <select id="chartType" onchange="updateChart()">
+        <option value="line">Line Chart</option>
+        <option value="bar">Bar Chart</option>
+        <!-- Add other chart types as needed -->
+    </select>
+
+    <canvas id="weatherChart"></canvas>
+
+    <script src="script.js"></script>
+
+    <label id="lon"></label>
+    <canvas id="myChart"></canvas>
+    <canvas id="myChart2"></canvas>
+    <a href="home.php">Return to home page</a>
+
+    <script>
+        // TODO: Task 1:
+        var daily = JSON.parse(dailydata_stoke);
+        document.getElementById('lon').innerHTML = daily.coord.lon;
+
+        // TODO: Task 2, 3 and 4
+        var forecast = JSON.parse(forecast_stoke);
+        this.dateList = forecast.list.map(list => {
+            return list.dt_txt;
+        });
+
+        this.temperatureList = forecast.list.map(list => {
+            return list.main.temp;
+        });
+        this.humidityList = forecast.list.map(list => {
+            return list.main.humidity;
+        });
+
+        // Initialize the chart with the default type
+        var ctx = document.getElementById('weatherChart').getContext('2d');
+        this.chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: this.dateList,
+                datasets: [
+                    {
+                        label: "Temperature (°C)",
+                        backgroundColor: "lightblue",
+                        borderColor: "blue",
+                        fill: false,
+                        data: this.temperatureList
+                    },
+                    {
+                        label: "Humidity (%)",
+                        backgroundColor: "red",
+                        borderColor: "blue",
+                        fill: false,
+                        data: this.humidityList
+                    }
+                ]
+            }
+        });
+
+        // Function to update the chart based on user selection
+        function updateChart() {
+            var chartType = document.getElementById('chartType').value;
+            this.chart.destroy(); // Destroy the existing chart
+
+            // Create a new chart with the selected type
+            var ctx = document.getElementById('weatherChart').getContext('2d');
+            this.chart = new Chart(ctx, {
+                type: chartType,
+                data: {
+                    labels: this.dateList,
+                    datasets: [
+                        {
+                            label: "Temperature (°C)",
+                            backgroundColor: "lightblue",
+                            borderColor: "blue",
+                            fill: false,
+                            data: this.temperatureList
+                        },
+                        {
+                            label: "Humidity (%)",
+                            backgroundColor: chartType === "bar" ? "purple" : "red",
+                            borderColor: "blue",
+                            fill: false,
+                            data: this.humidityList
+                        }
+                    ]
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
